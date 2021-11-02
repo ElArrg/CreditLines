@@ -3,15 +3,14 @@ package com.elarrg.credit.controller;
 import com.elarrg.credit.errors.ServiceException;
 import com.elarrg.credit.model.api.CreditRequest;
 import com.elarrg.credit.model.api.CreditResult;
+import com.elarrg.credit.model.util.Customer;
 import com.elarrg.credit.service.ICreditLineService;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
 
@@ -31,8 +30,9 @@ public class CreditLineResource {
     @PostMapping(value = {"/applications"},
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public CreditResult requestCreditLine(@RequestBody @Valid CreditRequest creditRequest) throws ServiceException {
-        return creditLineService.reviewCreditLineRequest(creditRequest);
+    public CreditResult requestCreditLine(@RequestBody @Valid CreditRequest creditRequest,
+                                          @RequestAttribute @ApiIgnore Customer customer) throws ServiceException {
+        return creditLineService.reviewCreditLineRequest(customer, creditRequest);
     }
 
 }

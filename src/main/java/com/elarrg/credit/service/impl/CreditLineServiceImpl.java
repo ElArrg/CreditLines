@@ -5,10 +5,14 @@ import com.elarrg.credit.model.api.BusinessType;
 import com.elarrg.credit.model.api.CreditLineStatus;
 import com.elarrg.credit.model.api.CreditRequest;
 import com.elarrg.credit.model.api.CreditResult;
+import com.elarrg.credit.model.util.Customer;
+import com.elarrg.credit.repository.ICreditLineRepository;
 import com.elarrg.credit.service.ICreditLineService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 import static com.elarrg.credit.errors.ServiceException.ServiceExceptionType;
 
@@ -23,9 +27,19 @@ public class CreditLineServiceImpl implements ICreditLineService {
     private static final Integer MONTHLY_REVENUE_PARTS = 1;
     private static final Integer MONTHLY_REVENUE_PARTITION = 5;
 
+    private final ICreditLineRepository creditLineRepository;
 
-    public CreditResult reviewCreditLineRequest(CreditRequest creditRequest) throws ServiceException {
-        CreditResult creditResult;
+    public CreditLineServiceImpl(ICreditLineRepository creditLineRepository) {
+        this.creditLineRepository = creditLineRepository;
+    }
+
+    public CreditResult reviewCreditLineRequest(Customer customer, CreditRequest creditRequest) throws ServiceException {
+
+        Optional<CreditResult> optionalCreditResult = creditLineRepository.findByCustomer(customer);
+
+        if (optionalCreditResult.isPresent()) {
+            return optionalCreditResult.get();
+        }
 
         Double recommendedCreditLine = getRecommendedCreditLine(
                 creditRequest.getFoundingType(),
@@ -33,13 +47,22 @@ public class CreditLineServiceImpl implements ICreditLineService {
                 creditRequest.getCashBalance()
         );
 
+        CreditResult creditResult;
+
         if (isAcceptableCreditLine(
                 creditRequest.getRequestedCreditLine(),
                 recommendedCreditLine
         )) {
-            creditResult = new CreditResult(CreditLineStatus.ACCEPTED, creditRequest.getRequestedCreditLine());
+            creditResult = creditLineRepository.save(customer,
+                    new CreditResult(CreditLineStatus.ACCEPTED, creditRequest.getRequestedCreditLine()));
+
         } else {
-            creditResult = new CreditResult(CreditLineStatus.REJECTED);
+
+            if (customer.incrementFailureCount() >= Customer.APPLICATION_FAILURE_LIMIT) {
+                creditResult = creditLineRepository.save(customer, new CreditResult(CreditLineStatus.REVIEWING));
+            } else {
+                creditResult = new CreditResult(CreditLineStatus.REJECTED);
+            }
         }
 
         return creditResult;
