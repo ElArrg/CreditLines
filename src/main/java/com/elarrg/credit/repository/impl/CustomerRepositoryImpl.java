@@ -19,6 +19,8 @@ public class CustomerRepositoryImpl implements ICustomerRepository {
 
     @Override
     public Customer save(String ipAddress) {
-        return userCreditResultMap.putIfAbsent(ipAddress, new Customer(ipAddress));
+        Customer newCustomer = new Customer(ipAddress);
+        userCreditResultMap.putIfAbsent(ipAddress, newCustomer);
+        return newCustomer;
     }
 }

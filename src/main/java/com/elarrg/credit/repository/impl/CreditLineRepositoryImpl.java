@@ -21,6 +21,7 @@ public class CreditLineRepositoryImpl implements ICreditLineRepository {
     @Override
     public CreditResult save(Customer customer, CreditResult creditResult) {
         customer.setDefinitiveStatus(creditResult.getCreditLineStatus());
-        return customerCreditResultMap.putIfAbsent(customer, creditResult);
+        customerCreditResultMap.putIfAbsent(customer, creditResult);
+        return creditResult;
     }
 }

@@ -47,6 +47,12 @@
             <version>3.0.0</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.giffing.bucket4j.spring.boot.starter</groupId>
+            <artifactId>bucket4j-spring-boot-starter</artifactId>
+            <version>0.4.0</version>
+        </dependency>
+
     </dependencies>
 
     <build>
