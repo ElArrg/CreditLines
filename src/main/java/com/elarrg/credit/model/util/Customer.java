@@ -4,6 +4,7 @@ import com.elarrg.credit.model.api.CreditLineStatus;
 import io.github.bucket4j.*;
 
 import java.time.Duration;
+import java.util.Objects;
 
 public class Customer {
     public static final int APPLICATION_FAILURE_LIMIT = 3;
@@ -71,4 +72,16 @@ public class Customer {
         }
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Customer customer = (Customer) o;
+        return ipAddress.equals(customer.ipAddress);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(ipAddress);
+    }
 }

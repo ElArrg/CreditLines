@@ -69,10 +69,15 @@ public class CreditLineServiceImpl implements ICreditLineService {
     }
 
     private boolean isAcceptableCreditLine(Double requestedCreditLine, Double recommendedCreditLine) {
-        return recommendedCreditLine > requestedCreditLine;
+        return recommendedCreditLine >= requestedCreditLine;
     }
 
     private Double getRecommendedCreditLine(BusinessType businessType, Double monthlyRevenue, Double cashBalance) throws ServiceException {
+
+        if (monthlyRevenue == null) {
+            String message = String.format("Monthly revenue is required for a %s credit line application", businessType);
+            throw new ServiceException(ServiceExceptionType.MISSING_ARGUMENT_ERROR, message);
+        }
 
         double monthlyRevenueProportion = (monthlyRevenue / MONTHLY_REVENUE_PARTITION) * MONTHLY_REVENUE_PARTS;
 
@@ -84,7 +89,7 @@ public class CreditLineServiceImpl implements ICreditLineService {
             case STARTUP: {
 
                 if (cashBalance == null) {
-                    String message = String.format("Cash balance is required for a %s credit line application", BusinessType.STARTUP);
+                    String message = String.format("Cash balance is required for a %s credit line application", businessType);
                     throw new ServiceException(ServiceExceptionType.MISSING_ARGUMENT_ERROR, message);
                 }
 
