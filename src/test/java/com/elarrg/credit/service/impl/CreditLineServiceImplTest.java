@@ -210,9 +210,8 @@ class CreditLineServiceImplTest {
         currentCreditRequest.setRequestedCreditLine(1000.98);
         currentCreditRequest.setRequestedDate(LocalDateTime.now());
 
-        ServiceException exception = assertThrows(ServiceException.class, () -> {
-            creditLineService.reviewCreditLineRequest(localIpCustomer, currentCreditRequest);
-        });
+        ServiceException exception = assertThrows(ServiceException.class, () ->
+                creditLineService.reviewCreditLineRequest(localIpCustomer, currentCreditRequest));
 
         String expectedMessage = "Monthly revenue is required for a SME credit line application";
         String actualMessage = exception.getErrorMessage();
