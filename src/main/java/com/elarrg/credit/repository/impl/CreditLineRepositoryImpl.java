@@ -3,6 +3,7 @@ package com.elarrg.credit.repository.impl;
 import com.elarrg.credit.model.api.CreditResult;
 import com.elarrg.credit.model.util.Customer;
 import com.elarrg.credit.repository.ICreditLineRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.Map;
@@ -13,6 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class CreditLineRepositoryImpl implements ICreditLineRepository {
     Map<Customer, CreditResult> customerCreditResultMap;
 
+    @Autowired
     public CreditLineRepositoryImpl() {
         customerCreditResultMap = new ConcurrentHashMap<>();
     }
