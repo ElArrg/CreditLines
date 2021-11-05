@@ -11,7 +11,15 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Repository
 public class CreditLineRepositoryImpl implements ICreditLineRepository {
-    Map<Customer, CreditResult> customerCreditResultMap = new ConcurrentHashMap<>();
+    Map<Customer, CreditResult> customerCreditResultMap;
+
+    public CreditLineRepositoryImpl() {
+        customerCreditResultMap = new ConcurrentHashMap<>();
+    }
+
+    public CreditLineRepositoryImpl(Map<Customer, CreditResult> customerCreditResultMap) {
+        this.customerCreditResultMap = customerCreditResultMap;
+    }
 
     @Override
     public Optional<CreditResult> findByCustomer(Customer customer) {

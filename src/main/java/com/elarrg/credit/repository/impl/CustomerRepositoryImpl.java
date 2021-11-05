@@ -10,7 +10,15 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Repository
 public class CustomerRepositoryImpl implements ICustomerRepository {
-    private final Map<String, Customer> userCreditResultMap = new ConcurrentHashMap<>();
+    private final Map<String, Customer> userCreditResultMap;
+
+    public CustomerRepositoryImpl() {
+        userCreditResultMap = new ConcurrentHashMap<>();
+    }
+
+    public CustomerRepositoryImpl(Map<String, Customer> userCreditResultMap) {
+        this.userCreditResultMap = userCreditResultMap;
+    }
 
     @Override
     public Optional<Customer> findByIp(String ipAddress) {
